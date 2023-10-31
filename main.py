@@ -46,9 +46,9 @@ while rodando:
        # Reinicie o temporizador para o próximo navio
         tempo_para_proximo_navio = random.randint(tempo_minimo, tempo_maximo)
         tempo_atual = 0
+    indicenavio = 0
+    Movimentar_Navios()
 
-    if y_chegada != y_berco:
-         Movimentar_Navios()
 
 # Atualize os navios
     navio_group.update()

@@ -39,26 +39,31 @@ navio_group = pygame.sprite.Group()
 def Movimentar_Navios():
     global x_chegada, y_chegada
     for i, navio in enumerate(navio_group):
-            # Use o operador de módulo para garantir que o índice esteja dentro dos limites da lista destino
-            i = i % len(destino)
-            destino_x, destino_y = destino[i]
+        # Use o operador de módulo para garantir que o índice esteja dentro dos limites da lista destino
+        i = i % len(destino)
+        destino_x, destino_y = destino[i]
 
-            atual_x, atual_y = navio.rect.center
-            dx = destino_x - atual_x
-            dy = destino_y - atual_y
-            distancia = ((dx ** 2) + (dy ** 2)) ** 0.5
+        atual_x, atual_y = navio.rect.center
+        dx = destino_x - atual_x
+        dy = destino_y - atual_y
+        distancia = ((dx ** 2) + (dy ** 2)) ** 0.5
 
-            if distancia > 0:
-                # Calcule a quantidade a ser movida nesta iteração
-                move_x = dx / distancia * navio_velocidade
-                move_y = dy / distancia * navio_velocidade
+        if distancia > 0:
+            # Calcule a quantidade a ser movida nesta iteração
+            move_x = dx / distancia * navio_velocidade
+            move_y = dy / distancia * navio_velocidade
 
-                # Atualize a posição do navio
-                x_chegada[i] = atual_x + move_x
-                y_chegada = atual_y + move_y
-                navio.rect.center = (x_chegada, y_chegada)
+            # Atualize a posição do navio
+            x_chegada[i] = atual_x + move_x
+            y_chegada = atual_y + move_y
 
-                return x_chegada[i], y_chegada
+            # Verifique a colisão com o berço atual e desative o movimento se houver colisão
+            for berco in [berco1, berco2, berco3, berco4]:
+                if navio.rect.colliderect(berco.rect):
+                    # O navio colidiu com o berço, desative o movimento
+                    return True
+
+            navio.rect.center = (x_chegada[i], y_chegada)
 
     return None
 
@@ -101,7 +106,6 @@ def verificar_cliques(navio):
         if berco.rect.collidepoint(mouse_x, mouse_y) and navio_selecionado is not None:
             navio_selecionado.rect.center = berco.rect.center
             navio_selecionado = None
-            y_chegada = y_berco
 
 
     if navio.rect.collidepoint(mouse_x, mouse_y):
