@@ -28,7 +28,8 @@ contador = 0
 tempo_espera_navio = 100  # Tempo de espera entre a criação de novos navios (em frames)
 tempo_descarga = 300  # Tempo de descarga em frames
 
-# Tipos de navios com diferentes tempos de descarregamento
+
+# Tipos de navios com diferentes tempos de descarregamento----------------------------------------------------
 tipos_de_navios = [
     {"imagem": pygame.image.load("navio1.png"), "tempo_descarga": 3},
     {"imagem": pygame.image.load("navio2.png"), "tempo_descarga": 5},
@@ -165,8 +166,8 @@ def criar_navio():
 # Loop Principal do Jogo
 tempo_navio = 0
 tempo_espera_porto = 0
-tempo_validade_carga = 1000  # Tempo para validade da carga em frames
-
+tempo_validade_carga = 10000  # Tempo para validade da carga em frames
+decrescente_validade_carga = tempo_validade_carga
 
 # Iniciar o jogo
 criar_portos()
@@ -193,6 +194,7 @@ while True:
                                 pontos += 1
                                 bonificacao = 1000  # Bonificação fixa de 1 segundo por ponto
                                 tempo_corrente += bonificacao
+                                decrescente_validade_carga += bonificacao
                                 navio.rect.x = porto.rect.x + 10  # Ajuste a posição para o centro do berço
                                 navio.rect.y = porto.rect.y - 20
                                 navio.descarregado = False  # Defina o status do navio como não descarregado
@@ -200,6 +202,9 @@ while True:
                                 navios_esperando.remove(navio)
     #contagem regressiva
     tempo_corrente -= 1
+
+    decrescente_validade_carga-=1
+
 
 
     if not navios_esperando:# Se não houver navios esperando, crie um novo navio
@@ -213,6 +218,9 @@ while True:
     # Lógica do jogo
     tempo_espera_porto += 1
     if tempo_corrente<=0:
+        pygame.quit()
+        sys.exit()
+    if decrescente_validade_carga <= 0:
         pygame.quit()
         sys.exit()
     if tempo_espera_porto >= tempo_validade_carga:
@@ -256,5 +264,10 @@ while True:
     fonte = pygame.font.Font(None, 36)
     texto_pontos = fonte.render(f"Pontos: {pontos}", True, branco)
     janela.blit(texto_pontos, (10, 10))
+
+    # Exibir pontos na tela
+    validade = pygame.font.Font(None, 18)
+    texto_validade = fonte.render(f"Validade: {decrescente_validade_carga/1000}s", True, vermelho)
+    janela.blit(texto_validade, (10, 50))
 
     pygame.display.flip()
