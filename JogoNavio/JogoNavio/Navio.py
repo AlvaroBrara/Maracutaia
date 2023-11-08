@@ -123,28 +123,50 @@ destino = [(228, 450), (481, 450), (734, 450), (986, 450)] #coordenadas de x dos
 x_chegada = [destino_x for destino_x, _ in destino]
 origem = [(largura-300, 450), (largura-250, 450), (largura-200, 450), (largura-150, 450)]
 navio_velocidade = 2
-
+# Função para repor as posições disponíveis
+def repor_posicoes_disponiveis():
+    global posicoes_disponiveis
+    posicoes_disponiveis = origem.copy()
 
 # Função para criar um novo navio
 posicoes_disponiveis = origem.copy()
 # Criar portos
 criar_portos()
+tempo_para_novo_navio = 1  # Ajuste esse valor para controlar a frequência de criação
 # Função para criar um novo navio
 posicoes_disponiveis = origem.copy()
-tempo_para_novo_navio = 1  # Ajuste esse valor para controlar a frequência de criação
-def criar_navio():
-    if not posicoes_disponiveis:
-        return None
-    # Escolha uma posição aleatória da lista de posições disponíveis
-    x, y = random.choice(posicoes_disponiveis)
-    cargo = random.choice(tipos_de_navios)  # Tipo de carga aleatória
-    novo_navio = Navio(x, y)
-    navios_esperando.add(novo_navio)
-    # Remova a posição escolhida da lista de posições disponíveis, se estiver lá
-    if (x, y) in posicoes_disponiveis:
-        posicoes_disponiveis.remove((x, y))
+tempo_para_nova_geracao = 300  # Intervalo de tempo para criar uma nova geração de navios
+tempo_para_novo_navio = tempo_para_nova_geracao  # Inicializa o temporizador
 
+# Função para criar um novo navio
+# Função para criar um novo navio
+def criar_navios():
+    global tempo_para_novo_navio
 
+    if tempo_para_novo_navio <= 0:
+        if not posicoes_disponiveis:
+            repor_posicoes_disponiveis()
+        numero_de_navios = random.randint(1, min(4, len(posicoes_disponiveis)))  # Gera entre 1 e 4 navios ou o número de posições disponíveis
+        for _ in range(numero_de_navios):
+            x, y = random.choice(posicoes_disponiveis)
+            cargo = random.choice(tipos_de_navios)
+            novo_navio = Navio(x, y)
+
+            # Verifique se o novo navio colide com outros navios
+            colide = False
+            for navio_existente in navios_esperando:
+                if novo_navio.rect.colliderect(navio_existente.rect):
+                    colide = True
+                    break
+
+            # Se não houver colisão, adicione o novo navio
+            if not colide:
+                navios_esperando.add(novo_navio)
+                if (x, y) in posicoes_disponiveis:
+                    posicoes_disponiveis.remove((x, y))
+
+        tempo_para_novo_navio = tempo_para_nova_geracao  # Redefina o temporizador
+    tempo_para_novo_navio -= 1
 
 # Loop Principal do Jogo
 while True:
@@ -178,20 +200,10 @@ while True:
     decrescente_validade_carga -= 1
 
     # Controle da criação de novos navios
-    if tempo_para_novo_navio <= 0:
-        criar_navio()  # Crie um novo navio
-        tempo_para_novo_navio = 300  # Redefina o temporizador
+    criar_navios()  # Crie um novo navio
 
-    tempo_para_novo_navio -= 1
-
-    # Controle da criação de novos navios
-    tempo_criacao_navio = 300  # Ajuste esse valor para controlar a frequência de criação
-    if tempo_criacao_navio <= 0:
-        criar_navio()  # Crie um novo navio
-        tempo_criacao_navio = 300  # Redefina o temporizador
-
-    tempo_criacao_navio -= 1
     tempo_corrente -= 1
+    Movimentar_Navios()
     decrescente_validade_carga -= 1
     Movimentar_Navios()
 
