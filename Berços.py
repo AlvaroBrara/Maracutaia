@@ -14,7 +14,7 @@ class Berco(pygame.sprite.Sprite):
 
 
 y_berco = 250
-
+#
 x_berco = [(100, 450), (300, 450), (500, 450),(700, 450)]
 # Exemplo de criação de um berço retangular azul claro
 largura_berco = 100  # Largura do berço
@@ -26,3 +26,5 @@ berco4 = Berco(700, y_berco, largura_berco, altura_berco)
 # Crie um grupo de berços
 bercos_group = pygame.sprite.Group()
 bercos_group.add(berco1, berco2, berco3, berco4)
+
+bercos_ocupados = [False, False, False, False]

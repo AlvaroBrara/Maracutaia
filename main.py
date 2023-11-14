@@ -2,22 +2,9 @@ import pygame
 import sys
 from Navios import *
 from Berços import *
-
-
+import pygame.font
+from Interface import*
 pygame.init()
-
-largura, altura = 1200, 600
-FPS = 120
-
-# tela
-tela = pygame.display.set_mode((largura, altura))
-pygame.display.set_caption("Alocação de Berço")
-background = pygame.image.load("Topview.png")
-background = pygame.transform.scale(background, (largura, altura))
-
-
-# Relógio para controlar a taxa de quadros por segundo
-relogio = pygame.time.Clock()
 
 
 
@@ -26,7 +13,7 @@ tempo_maximo = 3
 tempo_para_proximo_navio = random.randint(tempo_minimo, tempo_maximo)
 tempo_atual = 0
 
-
+fonte = pygame.font.Font(None, 36)
 # Loop principal do jogo
 rodando = True
 while rodando:
@@ -34,29 +21,39 @@ while rodando:
         if event.type == pygame.QUIT:
             rodando = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            if event.button == 1:  # Verifique se o botão esquerdo do mouse foi clicado
+            if event.button == 1:
                 for navio in navio_group:
                     verificar_cliques(navio)
 
-    tempo_atual += 1 / FPS  # Tempo desde o último quadro
-    #
-    #Se o tempo atual ultrapassar o tempo para o próximo navio, crie um novo navio
+    tempo_atual += 1 / FPS
+
     if tempo_atual >= tempo_para_proximo_navio:
         criar_navio_aleatorio()
-       # Reinicie o temporizador para o próximo navio
         tempo_para_proximo_navio = random.randint(tempo_minimo, tempo_maximo)
         tempo_atual = 0
+
     indicenavio = 0
     Movimentar_Navios()
 
-
-# Atualize os navios
     navio_group.update()
 
-    # Renderize os navios e a tela de fundo
     tela.blit(background, (0, 0))
     bercos_group.draw(tela)
     navio_group.draw(tela)
+
+    for i, berco_ocupado in enumerate(bercos_ocupados):
+        if berco_ocupado:
+            for navio in navio_group:
+                if navio.rect.collidepoint(navio.rect.center) and navio.tolerancia > 0:
+                    # Desenha a barra de espera (retângulo colorido proporcional à tolerância)
+                    pygame.draw.rect(tela, (0, 255, 0),
+                                     [navio.rect.x, navio.rect.y - 10, int(navio.tolerancia * 10), 5])
+                    navio.tolerancia -= 0.01  # Diminui a tolerância ao longo do tempo
+
+                    # Adicione a exibição de texto indicando a tolerância
+                    texto = fonte.render(f"Tolerância: {int(navio.tolerancia * 100)}%", True, (255, 255, 255))
+                    tela.blit(texto, (navio.rect.x, navio.rect.y - 30))
+
     pygame.display.flip()
 
     relogio.tick(FPS)
