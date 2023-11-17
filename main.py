@@ -1,19 +1,15 @@
-import pygame
-import sys
-from Navios import *
-from Berços import *
-import pygame.font
+
 from Interface import*
 pygame.init()
 
 
-
+#intervalo entre barcos
 tempo_minimo = 0
 tempo_maximo = 3
 tempo_para_proximo_navio = random.randint(tempo_minimo, tempo_maximo)
 tempo_atual = 0
 
-fonte = pygame.font.Font(None, 36)
+# quantidade_atual =100
 # Loop principal do jogo
 rodando = True
 while rodando:
@@ -23,37 +19,31 @@ while rodando:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 for navio in navio_group:
-                    verificar_cliques(navio)
+                    for destino_x, destino_y in destino:
+                        if (navio.rect.centerx, navio.rect.centery) == (destino_x, destino_y):
+                            verificar_cliques(navio)
 
     tempo_atual += 1 / FPS
-
+    print(tempo_atual)
     if tempo_atual >= tempo_para_proximo_navio:
         criar_navio_aleatorio()
         tempo_para_proximo_navio = random.randint(tempo_minimo, tempo_maximo)
         tempo_atual = 0
 
-    indicenavio = 0
     Movimentar_Navios()
 
-    navio_group.update()
-
+    # Desenhe os navios e as barras
     tela.blit(background, (0, 0))
     bercos_group.draw(tela)
     navio_group.draw(tela)
+    decrimento = 1
+    for navio in navio_group:
+        for destino_x, destino_y in destino:
+            if (navio.rect.centerx, navio.rect.centery) == (destino_x, destino_y):
+                Barra(navio)
 
-    for i, berco_ocupado in enumerate(bercos_ocupados):
-        if berco_ocupado:
-            for navio in navio_group:
-                if navio.rect.collidepoint(navio.rect.center) and navio.tolerancia > 0:
-                    # Desenha a barra de espera (retângulo colorido proporcional à tolerância)
-                    pygame.draw.rect(tela, (0, 255, 0),
-                                     [navio.rect.x, navio.rect.y - 10, int(navio.tolerancia * 10), 5])
-                    navio.tolerancia -= 0.01  # Diminui a tolerância ao longo do tempo
-
-                    # Adicione a exibição de texto indicando a tolerância
-                    texto = fonte.render(f"Tolerância: {int(navio.tolerancia * 100)}%", True, (255, 255, 255))
-                    tela.blit(texto, (navio.rect.x, navio.rect.y - 30))
-
+    # Atualize a tela
     pygame.display.flip()
 
+    # Controle de FPS
     relogio.tick(FPS)

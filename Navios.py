@@ -9,15 +9,19 @@ class navio(pygame.sprite.Sprite):
         if tipo == "carvao":
             self.image = pygame.image.load("navio_carvao.png")
             self.tempo_descarga = 1
-            self.tolerancia = 10/FPS
+            self.tolerancia_inicial = 10 #tolerancia fixa
+            self.tolerancia = 10 #tolerancia que muda com o tempo passado
         elif tipo == "soda_caustica":
             self.image = pygame.image.load("navio_soda_caustica.png")
             self.tempo_descarga = 2
-            self.tolerancia = 5/FPS
+            self.tolerancia = 5
+            self.tolerancia_inicial = 5
         elif tipo == "oleo_combustivel":
             self.image = pygame.image.load("navio_oleo_combustivel.png")
             self.tempo_descarga = 3
-            self.tolerancia = 5/FPS
+            self.tolerancia = 7
+            self.tolerancia_inicial = 7
+
 
         self.image = pygame.transform.scale(self.image, (80, 100))  # Ajuste o tamanho conforme necessário
         self.rect = self.image.get_rect()
@@ -72,7 +76,7 @@ def Movimentar_Navios():
 destino = [(100, y_chegada), (300, y_chegada), (500, y_chegada), (700, y_chegada)]
 x_chegada = [destino_x for destino_x, _ in destino]
 origem = [(850, 600), (1050, 600), (1250, 600), (1450, 600)]
-navio_velocidade = 2
+navio_velocidade = 5
 
 posicoes_disponiveis = origem.copy()
 
@@ -105,6 +109,7 @@ def verificar_cliques(navio):
     global navio_selecionado, y_chegada
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
+
     if navio.rect.collidepoint(mouse_x, mouse_y):
         # O jogador clicou em um navio
         if navio_selecionado is None:
@@ -113,13 +118,16 @@ def verificar_cliques(navio):
             navio_selecionado = None  # Desselecione o navio se ele já estava selecionado
 
     # Se o jogador clicou em um berço e um navio está selecionado, posicione o navio no centro do berço
+
     for i, berco in enumerate(bercos_group):
         if berco.rect.collidepoint(mouse_x, mouse_y) and navio_selecionado is not None:
             if not bercos_ocupados[i]:
                 navio_selecionado.rect.center = berco.rect.center
                 bercos_ocupados[i] = True  # Marque o berço como ocupado
                 navio_selecionado = None
-    if navio.rect.collidepoint(mouse_x, mouse_y):
+                if bercos_ocupados[i] == True :
+                # O navio não foi clicado, retorne ao estado normal
+                    navio.image.set_alpha(255)
         # O navio foi clicado, faça-o mais claro
         navio.image.set_alpha(150)  # Define a transparência do navio (valores entre 0 e 255)
 
