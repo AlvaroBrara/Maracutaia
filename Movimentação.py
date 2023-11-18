@@ -1,4 +1,3 @@
-
-#
-# def movimentar_navios(x,y):
-#
+import pygame
+from Navios import *
+from Berços import *

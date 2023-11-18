@@ -8,19 +8,22 @@ class navio(pygame.sprite.Sprite):
         # Carregue as imagens dos navios
         if tipo == "carvao":
             self.image = pygame.image.load("navio_carvao.png")
-            self.tempo_descarga = 1
-            self.tolerancia_inicial = 10 #tolerancia fixa
-            self.tolerancia = 10 #tolerancia que muda com o tempo passado
+            self.tempo_descarga_inicial = 10
+            self.tempo_descarga = 10
+            self.tempo_de_espera_inicial = 10 #tolerancia fixa
+            self.tempo_de_espera = 10 #tolerancia que muda com o tempo passado
         elif tipo == "soda_caustica":
             self.image = pygame.image.load("navio_soda_caustica.png")
-            self.tempo_descarga = 2
-            self.tolerancia = 5
-            self.tolerancia_inicial = 5
+            self.tempo_descarga_inicial = 10
+            self.tempo_descarga = 10
+            self.tempo_de_espera = 5
+            self.tempo_de_espera_inicial = 5
         elif tipo == "oleo_combustivel":
             self.image = pygame.image.load("navio_oleo_combustivel.png")
-            self.tempo_descarga = 3
-            self.tolerancia = 7
-            self.tolerancia_inicial = 7
+            self.tempo_descarga_inicial = 10
+            self.tempo_descarga = 10
+            self.tempo_de_espera = 7
+            self.tempo_de_espera_inicial = 7
 
 
         self.image = pygame.transform.scale(self.image, (80, 100))  # Ajuste o tamanho conforme necessário
@@ -76,7 +79,7 @@ def Movimentar_Navios():
 destino = [(100, y_chegada), (300, y_chegada), (500, y_chegada), (700, y_chegada)]
 x_chegada = [destino_x for destino_x, _ in destino]
 origem = [(850, 600), (1050, 600), (1250, 600), (1450, 600)]
-navio_velocidade = 5
+navio_velocidade = 2
 
 posicoes_disponiveis = origem.copy()
 
@@ -104,34 +107,34 @@ def criar_navio_aleatorio():
         return None
 
 
+
 navio_selecionado = None
 def verificar_cliques(navio):
-    global navio_selecionado, y_chegada
+    global navio_selecionado
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
 
-    if navio.rect.collidepoint(mouse_x, mouse_y):
-        # O jogador clicou em um navio
-        if navio_selecionado is None:
-            navio_selecionado = navio  # Defina o navio como selecionado
-        else:
-            navio_selecionado = None  # Desselecione o navio se ele já estava selecionado
+    # Verifica se o navio está no destino e se o mouse foi clicado
+    for destino_x, destino_y in destino:
+        if (navio.rect.collidepoint(mouse_x, mouse_y) and
+                (navio.rect.centerx, navio.rect.centery) == (destino_x, destino_y) and
+                pygame.mouse.get_pressed()[0]):
+            # O jogador clicou em um navio no destino
+            if navio_selecionado is None:
+                navio_selecionado = navio  # Defina o navio como selecionado
+                # Altere a transparência do navio selecionado
+                navio_selecionado.image.set_alpha(150)
+            else:
+                navio_selecionado.image.set_alpha(255)  # Restaura a transparência do navio desselecionado
+                navio_selecionado = None  # Desselecione o navio
+            break  # Saia do loop, pois o navio está no destino e foi clicado
 
     # Se o jogador clicou em um berço e um navio está selecionado, posicione o navio no centro do berço
-
     for i, berco in enumerate(bercos_group):
         if berco.rect.collidepoint(mouse_x, mouse_y) and navio_selecionado is not None:
             if not bercos_ocupados[i]:
                 navio_selecionado.rect.center = berco.rect.center
                 bercos_ocupados[i] = True  # Marque o berço como ocupado
+                navio_selecionado.image.set_alpha(255)  # Restaura a transparência do navio ao movê-lo para um berço
                 navio_selecionado = None
-                if bercos_ocupados[i] == True :
-                # O navio não foi clicado, retorne ao estado normal
-                    navio.image.set_alpha(255)
-        # O navio foi clicado, faça-o mais claro
-        navio.image.set_alpha(150)  # Define a transparência do navio (valores entre 0 e 255)
-
-    else:
-        # O navio não foi clicado, retorne ao estado normal
-        navio.image.set_alpha(255)  # Restaura a transparência do navio
-
+                break  # Saia do loop, pois o navio foi movido para um berço

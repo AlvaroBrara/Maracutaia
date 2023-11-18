@@ -1,4 +1,4 @@
-
+from Movimentação import*
 from Interface import*
 pygame.init()
 
@@ -19,9 +19,7 @@ while rodando:
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 for navio in navio_group:
-                    for destino_x, destino_y in destino:
-                        if (navio.rect.centerx, navio.rect.centery) == (destino_x, destino_y):
-                            verificar_cliques(navio)
+                    verificar_cliques(navio)
 
     tempo_atual += 1 / FPS
     print(tempo_atual)
@@ -40,8 +38,12 @@ while rodando:
     for navio in navio_group:
         for destino_x, destino_y in destino:
             if (navio.rect.centerx, navio.rect.centery) == (destino_x, destino_y):
-                Barra(navio)
+                Barra_Espera(navio)
 
+    for navio in navio_group:
+        for berco in bercos_group:
+            if navio.rect.colliderect(berco.rect):
+                Barra_Descarga(navio)
     # Atualize a tela
     pygame.display.flip()
 
