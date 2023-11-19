@@ -34,7 +34,6 @@ while rodando:
     tela.blit(background, (0, 0))
     bercos_group.draw(tela)
     navio_group.draw(tela)
-    decrimento = 1
     for navio in navio_group:
         for destino_x, destino_y in destino:
             if (navio.rect.centerx, navio.rect.centery) == (destino_x, destino_y):

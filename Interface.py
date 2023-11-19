@@ -50,7 +50,7 @@ def Barra_Descarga(navio):
     pygame.draw.rect(tela, (255, 255, 255), [navio.rect.x, navio.rect.y - 10, tamanho_da_barra, altura_da_barra])
 
     # Desenhar a barra azul
-    pygame.draw.rect(tela, (255, 0, 0), [navio.rect.x, navio.rect.y - 10, tamanho_atual, altura_da_barra])
+    pygame.draw.rect(tela, (0, 250, 0), [navio.rect.x, navio.rect.y - 10, tamanho_atual, altura_da_barra])
 
     # Desenhar a borda
     pygame.draw.rect(tela, (0, 0, 0), [navio.rect.x, navio.rect.y - 10, tamanho_da_barra, altura_da_barra], 2)
