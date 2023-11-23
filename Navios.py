@@ -39,6 +39,8 @@ y_chegada = 450
 # navio3 = navio(1250, 600, random.choice(cargo_type))
 # navio4 = navio(1450,600, random.choice(cargo_type))
 navio_group = pygame.sprite.Group()
+navio_esperando = navio_group.copy()
+navios_em_porto= pygame.sprite.Group()
 #
 #
 # navio_group.add(navio1)
@@ -46,10 +48,12 @@ navio_group = pygame.sprite.Group()
 # y_berco = 250
 # x_chegada = 1
 # x_berco = 100
+
+
 def Movimentar_Navios():
     global x_chegada, y_chegada
 
-    for i, navio in enumerate(navio_group):
+    for i, navio in enumerate(navio_group): #compara num-navios com o numero de destinos disponíveis
         i = i % len(destino)
         destino_x, destino_y = destino[i]
         atual_x, atual_y = navio.rect.center
@@ -67,6 +71,7 @@ def Movimentar_Navios():
                 if navio.rect.colliderect(berco.rect):
                     if not bercos_ocupados[j]:
                         bercos_ocupados[j] = True  # Marque o berço como ocupado
+
                     else:
                         colisao_com_berco = True
                     break
@@ -76,40 +81,53 @@ def Movimentar_Navios():
                 new_y = atual_y + move_y
                 navio.rect.center = (new_x, new_y)
 
+
+# def repor_posicoes_disponiveis():
+#     global posicoes_disponiveis,navio_esperando
+#
+#     # Crie uma lista para armazenar as posições com navios
+#     posicoes_com_navios = [navio.rect.center for navio in navio_esperando]
+#
+#     # Remova as posições de navios das posições disponíveis
+#     posicoes_disponiveis = [posicao for posicao in posicoes_disponiveis if posicao not in posicoes_com_navios]
+
 destino = [(100, y_chegada), (300, y_chegada), (500, y_chegada), (700, y_chegada)]
-x_chegada = [destino_x for destino_x, _ in destino]
+# x_chegada = [destino_x for destino_x, _ in destino]
 origem = [(850, 600), (1050, 600), (1250, 600), (1450, 600)]
 navio_velocidade = 2
-
-posicoes_disponiveis = origem.copy()
+posicoes_de_inicio = origem.copy()
 
 
 def criar_navio_aleatorio():
-    global posicoes_disponiveis
+    global posicoes_de_inicio, navio_group, tipo
 
-    if not posicoes_disponiveis:
-        # Se não houver posições disponíveis, saia da função
-        return
+    # for berco in bercos_ocupados:
+    #     if berco == True:
+    #         repor_posicoes_disponiveis()
 
-    # Escolha uma posição aleatória da lista de posições disponíveis
-    x, y = random.choice(posicoes_disponiveis)
-    cargo = random.choice(tipo)  # Tipo de carga aleatória
+
+    # if not posicoes_disponiveis:
+    #     return  # Se não houver posições disponíveis, saia da função
+
+    x, y = random.choice(posicoes_de_inicio)
+    cargo = random.choice(tipo)
     novo_navio = navio(x, y, cargo)
 
-    # Movimentar_Navios()
+    # Adicione o navio ao grupo
     navio_group.add(novo_navio)
 
-    # Remova a posição escolhida da lista de posições disponíveis, se estiver lá
-    if (x, y) in posicoes_disponiveis:
-        posicoes_disponiveis.remove((x, y))
+    # # Remova a posição escolhida da lista de posições disponíveis, se estiver lá
+    # if (x, y) in posicoes_disponiveis:
+    #     posicoes_disponiveis.remove((x, y))
 
-    if not posicoes_disponiveis:
-        return None
+
+
+
 
 
 
 navio_selecionado = None
-def verificar_cliques(navio):
+def cliques(navio):
     global navio_selecionado
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
