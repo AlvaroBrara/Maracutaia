@@ -18,7 +18,6 @@ while rodando:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             rodando = False
-
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if event.button == 1:
                 for navio in navio_group:
@@ -29,7 +28,7 @@ while rodando:
     if tempo_atual > tempo_para_proximo_navio:
         if len(navio_group) != len(bercos_group):
             criar_navio_aleatorio()  # Chama a função para criar um novo navio
-            tempo_para_proximo_navio = tempo_atual + random.randint(tempo_minimo,tempo_maximo)  # Atualiza o tempo para o próximo navio
+            tempo_para_proximo_navio = tempo_atual + random.randint(tempo_minimo, tempo_maximo)  # Atualiza o tempo para o próximo navio
 
     indicenavio = 0
     Movimentar_Navios()
@@ -49,30 +48,19 @@ while rodando:
                 # repor_posicoes_disponiveis()
                 Barra_Descarga(navio)
 
-        #
-        # # Atualize a tela
-        # for i, berco in enumerate(bercos_group):
-        #     if pygame.sprite.collide_rect(navio, berco):
-        #         if not bercos_ocupados[i]:
-        #             if navio.rect.center in posicoes_disponiveis:
-        #                 posicoes_disponiveis.append(navio.rect.center)
-        #                 bercos_ocupados[i] = True
-        #
-        #                 # repor_posicoes_disponiveis()
-        #                 criar_navio_aleatorio()
-        #                 # criar_navio_aleatorio()
-        #
-        #         # Ajuste da espera e remoção do navio
-        #         navio.tempo_descarga -= 0.01
-        #         if navio.tempo_descarga <= 0:
-        #             navio_group.remove(navio)
-        #             #navio.rect.center = origem[indicenavio]
-        #             #navio.tempo_descarga = navio.tempo_descarga_inicial
-        #             #indicenavio = (indicenavio + 1) % len(origem)
-        #
-        #             bercos_ocupados[i] = False
-    if navio.tempo_descarga <= 0:
-        navio_group.remove(navio)
+                # Atualize a tela
+                for i, berco in enumerate(bercos_group):
+                    if pygame.sprite.collide_rect(navio, berco):
+                        if not bercos_ocupados[i]:
+                            if navio.rect.center in posicoes_de_inicio:
+                                bercos_ocupados[i] = True
+
+                        # Ajuste da espera e remoção do navio
+                        navio.tempo_descarga -= 0.01
+                        if navio.tempo_descarga <= 0:
+                            navio_group.remove(navio)
+                            bercos_ocupados[i] = False
+
     for indice, elemento in enumerate(posicoes_de_inicio):
         print(f"O elemento '{elemento}' está no índice {indice}")
     for indice, elemento in enumerate(navio_group):
