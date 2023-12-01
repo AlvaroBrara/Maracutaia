@@ -37,4 +37,4 @@ berco4 = Berco(700, y_berco, largura_berco, altura_berco,'carvao')
 bercos_group = pygame.sprite.Group()
 bercos_group.add(berco1, berco2, berco3, berco4)
 
-bercos_ocupados = [False, False, False, False]
+bercos_ocupados = [False] * len(bercos_group)  # Initialize with False for each berth

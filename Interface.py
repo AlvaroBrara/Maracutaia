@@ -1,7 +1,7 @@
 import pygame
 import sys
 from Navios import*
-largura, altura = 800, 600
+largura, altura = 1200, 600
 FPS = 120
 pygame.init()
 # tela
