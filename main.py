@@ -4,8 +4,8 @@ pygame.init()
 
 # Variáveis de tempo
 tempo_atual = 0
-tempo_minimo = 1
-tempo_maximo = 3
+tempo_minimo = 0
+tempo_maximo = 0
 tempo_para_proximo_navio = random.randint(tempo_minimo, tempo_maximo)
 
 # Loop principal do jogo

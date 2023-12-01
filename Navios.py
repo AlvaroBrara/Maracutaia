@@ -30,13 +30,13 @@ class navio(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.center = (x_chegada, y_chegada)
         self.cargo_tipo = tipo
-        self.velocidade =2
+        # self.velocidade =2
 tipo=['carvao', 'soda_caustica','oleo_combustivel']
 y_chegada = 450
 navio_group = pygame.sprite.Group()
 navio_esperando = navio_group.copy()
 navios_em_porto= pygame.sprite.Group()
-
+velocidade_navio = 2
 
 def criar_navio_aleatorio():
     global posicoes_de_inicio, navio_group, tipo
@@ -51,12 +51,13 @@ def criar_navio_aleatorio():
 
 destinos_ocupados = [False, False, False, False]
 
+navio_velocidade = 2
 destino = [(100, y_chegada), (300, y_chegada), (500, y_chegada), (700, y_chegada)]
 origem = [(850, 600)]
 posicoes_de_inicio = origem.copy()
 
 def Movimentar_Navios():
-    global x_chegada, y_chegada, destinos_ocupados
+    global x_chegada, y_chegada, navio_velocidade, destinos_ocupados
 
     for i, navio in enumerate(navio_group):
         i = i % len(destino)
@@ -68,8 +69,8 @@ def Movimentar_Navios():
 
         if distancia > 0:
             if not destinos_ocupados[i]:
-                move_x = dx / distancia * navio.velocidade
-                move_y = dy / distancia * navio.velocidade
+                move_x = dx / distancia * navio_velocidade
+                move_y = dy / distancia * navio_velocidade
 
                 colisao_com_berco = False
                 for j, berco in enumerate(bercos_group):
@@ -78,7 +79,7 @@ def Movimentar_Navios():
                             bercos_ocupados[j] = True
                         else:
                             colisao_com_berco = True
-                            break
+                        break
 
                 if not colisao_com_berco:
                     new_x = atual_x + move_x
@@ -86,11 +87,10 @@ def Movimentar_Navios():
                     navio.rect.center = (new_x, new_y)
         else:
             destinos_ocupados[i] = True
-            navio.velocidade = 0
 
 navio_selecionado = None
 def cliques(navio):
-    global navio_selecionado
+    global navio_selecionado,destino
 
     mouse_x, mouse_y = pygame.mouse.get_pos()
 
