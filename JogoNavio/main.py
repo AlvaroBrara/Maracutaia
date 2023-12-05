@@ -43,12 +43,15 @@ while rodando:
 
         for destino_x, destino_y in destino:
             if (navio.rect.centerx, navio.rect.centery) == (destino_x, destino_y):
-                Barra_Espera(navio)
+                Barra_Espera(navio,pontuacao)
+                pontuacao = Barra_Espera(navio, pontuacao)
+
 
 
         for berco in bercos_group:
             if navio.rect.colliderect(berco.rect):
-                Barra_Descarga(navio)
+                Barra_Descarga(navio,pontuacao)
+                pontuacao = Barra_Descarga(navio, pontuacao)
 
                 # Atualize a tela
                 for i, berco in enumerate(bercos_group):
@@ -62,7 +65,7 @@ while rodando:
                             navio_group.remove(navio)
                             bercos_ocupados[i] = False
 
-
+    renderizar_pontuacao(pontuacao)  # Renderiza a pontuação na tela
     pygame.display.flip()
     relogio.tick(FPS)
 # Finalização do Pygame e saída do programa
