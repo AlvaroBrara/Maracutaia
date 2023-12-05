@@ -16,7 +16,10 @@ relogio = pygame.time.Clock()
 
 fonte = pygame.font.Font(None, 36)
 
-def Barra_Espera(navio):
+def renderizar_pontuacao(pontuacao):
+    texto_pontuacao = fonte.render(f"Pontuação: {pontuacao}", True, (255, 255, 255))
+    tela.blit(texto_pontuacao, (10, 10))  # Ajuste as coordenadas conforme necessário
+def Barra_Espera(navio,pontuacao):
     tamanho_da_barra = 100
     altura_da_barra = 25
 
@@ -38,8 +41,18 @@ def Barra_Espera(navio):
 
     # Reduza a tolerância com base no tempo decorrido (assumindo que o clock.tick já está sendo usado)
     navio.tempo_de_espera -= relogio.get_rawtime() / 1000.0
+    if navio.tempo_de_espera<=0 and not navio.pontos_contados:
+        if navio.cargo_tipo == "carvao":
+            pontuacao-=navio.ponto_carvao
+        if navio.cargo_tipo == "soda_caustica":
+            pontuacao-=navio.ponto_soda
+        if navio.cargo_tipo == "oleo_combustivel":
+            pontuacao-=navio.ponto_oleo
+        navio.pontos_contados=True
 
-def Barra_Descarga(navio):
+    return pontuacao
+
+def Barra_Descarga(navio,pontuacao):
     tamanho_da_barra = 100
     altura_da_barra = 25
 
@@ -61,3 +74,12 @@ def Barra_Descarga(navio):
 
     # Reduza o tempo de descarga com base no tempo decorrido (assumindo que o clock.tick já está sendo usado)
     navio.tempo_descarga -= relogio.get_rawtime() / 1000.0
+    if navio.tempo_descarga < 0 and not navio.pontos_contados:
+        if navio.cargo_tipo == "carvao":
+            pontuacao += navio.ponto_carvao
+        elif navio.cargo_tipo == "soda_caustica":
+            pontuacao += navio.ponto_soda
+        elif navio.cargo_tipo == "oleo_combustivel":
+            pontuacao += navio.ponto_oleo
+        navio.pontos_contados = True  # Marca os pontos como contados
+    return pontuacao
