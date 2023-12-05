@@ -8,10 +8,13 @@ class Berco(pygame.sprite.Sprite):
 
         if tipo == 'carvao':
             cor = (255, 0, 0, 128)  # Vermelho com transparência
+            self.eficacia = 0, 25
         elif tipo == 'soda_caustica':
             cor = (0, 0, 255, 128)  # Azul com transparência
+            self.eficacia = 0, 50
         elif tipo == 'oleo_combustivel':
             cor = (255, 255, 0, 128)  # Amarelo com transparência
+            self.eficacia = 0, 75
         else:
             # Lógica para tipos desconhecidos (pode ser ajustada conforme necessário)
             cor = (100, 100, 100, 100)  # Cor padrão com transparência
@@ -24,8 +27,9 @@ class Berco(pygame.sprite.Sprite):
 
 tipo=['carvao', 'soda_caustica','oleo_combustivel']
 y_berco = 250
-#
+
 x_berco = [(100, 450), (300, 450), (500, 450),(700, 450)]
+
 # Exemplo de criação de um berço retangular azul claro
 largura_berco = 100  # Largura do berço
 altura_berco = 40   # Altura do berço
@@ -37,4 +41,4 @@ berco4 = Berco(700, y_berco, largura_berco, altura_berco,'carvao')
 bercos_group = pygame.sprite.Group()
 bercos_group.add(berco1, berco2, berco3, berco4)
 
-bercos_ocupados = [False] * len(bercos_group)  # Initialize with False for each berth
+bercos_ocupados = [False, False, False, False]
