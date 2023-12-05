@@ -1,7 +1,7 @@
 import pygame
 import random
 from Berços import *
-from main import *
+
 from Interface import *
 class navio(pygame.sprite.Sprite):
     def __init__(self, x_chegada, y_chegada, tipo, ):
@@ -13,18 +13,21 @@ class navio(pygame.sprite.Sprite):
             self.tempo_descarga = 5
             self.tempo_de_espera_inicial = 10 #tolerancia fixa
             self.tempo_de_espera = 10 #tolerancia que muda com o tempo passado
+            self.ponto_carvao=5
         elif tipo == "soda_caustica":
             self.image = pygame.image.load("navio_soda_caustica.png")
             self.tempo_descarga_inicial = 10
             self.tempo_descarga = 5
             self.tempo_de_espera = 5
             self.tempo_de_espera_inicial = 5
+            self.ponto_soda= 10
         elif tipo == "oleo_combustivel":
             self.image = pygame.image.load("navio_oleo_combustivel.png")
             self.tempo_descarga_inicial = 10
             self.tempo_descarga = 5
             self.tempo_de_espera = 7
             self.tempo_de_espera_inicial = 7
+            self.ponto_oleo=15
 
 
         self.image = pygame.transform.scale(self.image, (80, 100))  # Ajuste o tamanho conforme necessário
@@ -33,9 +36,12 @@ class navio(pygame.sprite.Sprite):
         self.cargo_tipo = tipo
         self.chegou_destino=False
         self.destino_atual_index = 0
+        self.pontos=0
+        self.pontos_contados=False
 
 tipo=['carvao', 'soda_caustica','oleo_combustivel']
 y_chegada = 450
+pontuacao=0
 navio_group = pygame.sprite.Group()
 for navio in navio_group:
     navio_esperando = navio.copy()
