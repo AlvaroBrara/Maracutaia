@@ -1,7 +1,6 @@
 import pygame
 import random
 from Berços import *
-
 from Interface import *
 class navio(pygame.sprite.Sprite):
     def __init__(self, x_chegada, y_chegada, tipo, ):
@@ -9,74 +8,71 @@ class navio(pygame.sprite.Sprite):
         # Carregue as imagens dos navios
         if tipo == "carvao":
             self.image = pygame.image.load("navio_carvao.png")
-            self.tempo_descarga_inicial = 10
+            self.tempo_descarga_inicial = 5
             self.tempo_descarga = 5
-            self.tempo_de_espera_inicial = 10 #tolerancia fixa
-            self.tempo_de_espera = 10 #tolerancia que muda com o tempo passado
-            self.ponto_carvao=5
+            self.tempo_de_espera_inicial = 10  # tolerancia fixa
+            self.tempo_de_espera = 10  # tolerancia que muda com o tempo passado
+            self.ponto = 10
+            self.tempo_de_atraso_inicial = 3
+            self.tempo_de_atraso = 3
         elif tipo == "soda_caustica":
             self.image = pygame.image.load("navio_soda_caustica.png")
-            self.tempo_descarga_inicial = 10
-            self.tempo_descarga = 5
-            self.tempo_de_espera = 5
-            self.tempo_de_espera_inicial = 5
-            self.ponto_soda= 10
-        elif tipo == "oleo_combustivel":
-            self.image = pygame.image.load("navio_oleo_combustivel.png")
-            self.tempo_descarga_inicial = 10
-            self.tempo_descarga = 5
+            self.tempo_descarga_inicial = 7
+            self.tempo_descarga = 7
             self.tempo_de_espera = 7
             self.tempo_de_espera_inicial = 7
-            self.ponto_oleo=15
-
-
+            self.ponto = 20
+            self.tempo_de_atraso_inicial = 4
+            self.tempo_de_atraso = 4
+        elif tipo == "oleo_combustivel":
+            self.image = pygame.image.load("navio_oleo_combustivel.png")
+            self.tempo_descarga_inicial = 12
+            self.tempo_descarga = 12
+            self.tempo_de_espera = 5
+            self.tempo_de_espera_inicial = 5
+            self.ponto=40
+            self.tempo_de_atraso_inicial = 5
+            self.tempo_de_atraso = 5
         self.image = pygame.transform.scale(self.image, (80, 100))  # Ajuste o tamanho conforme necessário
         self.rect = self.image.get_rect()
         self.rect.center = (x_chegada, y_chegada)
         self.cargo_tipo = tipo
-        self.chegou_destino=False
-        self.destino_atual_index = 0
-        self.pontos=0
-        self.pontos_contados=False
 
 tipo=['carvao', 'soda_caustica','oleo_combustivel']
 y_chegada = 450
-pontuacao=0
+
 navio_group = pygame.sprite.Group()
 for navio in navio_group:
     navio_esperando = navio.copy()
 
 #tem que ajeitar a movimentação bugada e teleportar o navio diretamente para a chegada
 def Movimentar_Navios():
-    global x_chegada, y_chegada, posicoes_de_chegada
-
-    for i, navio in enumerate(navio_group): #compara nº_navios com o numero de destinos disponíveis
+    global x_chegada, y_chegada, navio_velocidade, destinos_ocupados
+    for i, navio in enumerate(navio_group):
         i = i % len(destino)
         destino_x, destino_y = destino[i]
         atual_x, atual_y = navio.rect.center
         dx = destino_x - atual_x
         dy = destino_y - atual_y
         distancia = ((dx ** 2) + (dy ** 2)) ** 0.5
-        #mova o navio quando...
-        if distancia >=1:
+
+        if distancia > 0:
             move_x = dx / distancia * navio_velocidade
             move_y = dy / distancia * navio_velocidade
-           # Verifique a colisão com o berço atual e desative o movimento se houver colisão
+
             colisao_com_berco = False
             for j, berco in enumerate(bercos_group):
                 if navio.rect.colliderect(berco.rect):
                     if not bercos_ocupados[j]:
-                        bercos_ocupados[j] = True  # Marque o berço como ocupado
+                        bercos_ocupados[j] = True
                     else:
                         colisao_com_berco = True
                     break
+
             if not colisao_com_berco:
                 new_x = atual_x + move_x
                 new_y = atual_y + move_y
                 navio.rect.center = (new_x, new_y)
-        else:
-            navio.chegou_destino = True  # Marca o navio como tendo chegado ao destino
-            navio.destino_atual_index += 1  # Atualiza o índice do próximo destino
 
 
 destino = [(100, y_chegada), (300, y_chegada), (500, y_chegada), (700, y_chegada)]
