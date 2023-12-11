@@ -6,15 +6,17 @@ class Berco(pygame.sprite.Sprite):
 
         self.image = pygame.Surface((largura, altura), pygame.SRCALPHA)
 
+        self.tipo = tipo  # Adicione o atributo 'tipo'
+
         if tipo == 'carvao':
             cor = (255, 0, 0, 128)  # Vermelho com transparência
-            self.eficacia = 0, 25
+            self.peso = 2
         elif tipo == 'soda_caustica':
             cor = (0, 0, 255, 128)  # Azul com transparência
-            self.eficacia = 0, 50
+            self.peso = 1
         elif tipo == 'oleo_combustivel':
             cor = (255, 255, 0, 128)  # Amarelo com transparência
-            self.eficacia = 0, 75
+            self.peso = 1
         else:
             # Lógica para tipos desconhecidos (pode ser ajustada conforme necessário)
             cor = (100, 100, 100, 100)  # Cor padrão com transparência
@@ -23,7 +25,6 @@ class Berco(pygame.sprite.Sprite):
 
         self.rect = self.image.get_rect()
         self.rect.center = (x_berco, y_berco)
-
 
 tipo=['carvao', 'soda_caustica','oleo_combustivel']
 y_berco = 250
