@@ -2,7 +2,7 @@ import pygame
 import sys
 from Navios import *
 
-largura, altura = 800, 600
+largura, altura = 900, 600
 FPS = 120
 pygame.init()
 # tela
@@ -11,11 +11,10 @@ pygame.display.set_caption("Alocação de Berço")
 background = pygame.image.load("Topview.png")
 background = pygame.transform.scale(background, (largura, altura))
 
-# # música tema:
-# pygame.mixer.music.load('musica_tema.mp3')
-# pygame.mixer.music.set_volume(0.45)
-# pygame.mixer.music.play(-1)
-
+# música tema:
+pygame.mixer.music.load('musica_tema.mp3')
+pygame.mixer.music.set_volume(0.45)
+pygame.mixer.music.play(-1)
 
 # Relógio para controlar a taxa de quadros por segundo
 relogio = pygame.time.Clock()
@@ -46,6 +45,7 @@ def Barra_Espera(navio):
     # Reduza a tolerância com base no tempo decorrido (assumindo que o clock.tick já está sendo usado)
     navio.tempo_de_espera -= relogio.get_rawtime() / 1000.0
     navio.tempo_de_espera = max(navio.tempo_de_espera, 0)
+
 
 def Barra_Descarga(navio):
     tamanho_da_barra = 100
@@ -95,7 +95,6 @@ def Barra_Atraso(navio):
         navio.tempo_de_atraso = navio.tempo_de_atraso_inicial
 
 
-
 pontuacao = 0
 
 
@@ -133,7 +132,38 @@ def gerenciaPontuacao(navio, berco):
         pontuacao -= penalidade_atraso
 
     return pontuacao
+
+
 def exibir_pontuacao():
     # Exibe a pontuação na tela
     texto_pontuacao = fonte.render(f"Pontuação: {pontuacao}", True, (255, 255, 255))
     tela.blit(texto_pontuacao, (10, 10))
+
+
+# ---------------------PONTUAÇÃO DO JOGO--------------------------
+pontuacao_maxima = 200
+pontuacao_minima = -100
+
+
+def verificar_estado_jogo():
+    global rodando
+
+    if pontuacao >= pontuacao_maxima or pontuacao <= pontuacao_minima:
+        fonte_mensagem = pygame.font.Font(None, 46)  # Define a fonte para a mensagem
+        if pontuacao >= pontuacao_maxima:
+            mensagem = fonte_mensagem.render("Você venceu! Parabéns!", True, (255, 255, 255))
+            tela.blit(mensagem, (300, 300))  # Renderiza a mensagem na tela
+            pygame.mixer.music.stop()  # Pára a música tema
+            pygame.mixer.music.load('win_musica.mp3')  # Carrega a música de vitória
+            pygame.mixer.music.set_volume(0.45)  # volume da música
+            pygame.mixer.music.play()  # reproduzir a música em um loop infinito
+        elif pontuacao <= pontuacao_minima:
+            mensagem = fonte_mensagem.render("Você perdeu! Tente novamente!", True, (255, 255, 255))
+            tela.blit(mensagem, (200, 300))  # Renderiza a mensagem na tela
+            pygame.mixer.music.stop()  # Pára a música tema
+            pygame.mixer.music.load('loss_musica.mp3')  # Carrega a música de vitória
+            pygame.mixer.music.set_volume(0.45)
+            pygame.mixer.music.play()  # reproduzir a música sem loop
+        return True
+    else:
+        return False
