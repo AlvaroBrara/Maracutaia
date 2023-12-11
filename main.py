@@ -11,7 +11,7 @@ tempo_atual = 0
 tempo_minimo = 0
 tempo_maximo = 0
 tempo_para_proximo_navio = random.randint(tempo_minimo, tempo_maximo)
-
+#fonte_tempo = pygame.font.Font(None, 36)  # Define a fonte para o tempo
 # Loop principal do jogo
 pausa = False
 rodando = True
@@ -27,8 +27,13 @@ while rodando:
             if event.key == pygame.K_SPACE:
                 pausa = not pausa
 
+
+    # Verifique o estado do jogo:
+    pausa = verificar_estado_jogo()
+
     if not pausa:
         tempo_atual += 1 / FPS
+
 
         # Inicializando o aparecimento de navios
         if tempo_atual > tempo_para_proximo_navio:
@@ -58,7 +63,7 @@ while rodando:
                     Barra_Descarga(navio)
                     gerenciaPontuacao(navio, berco)
                     # Atualize a tela
-                    for i, berco in enumerate(bercos_group):
+                    for i, berco in enumerate(bercos_group): #cada i recebe a posição[i] e o berço, um nome
                         if pygame.sprite.collide_rect(navio, berco):
                             if not bercos_ocupados[i]:
                                 if navio.rect.center in posicoes_de_inicio:
@@ -74,6 +79,7 @@ while rodando:
 
         # Renderiza a pontuação na tela
         exibir_pontuacao()
+        verificar_estado_jogo()
         #print(pontuacao_total)
         pygame.display.flip()
         relogio.tick(FPS)
