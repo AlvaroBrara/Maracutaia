@@ -2,7 +2,7 @@ import pygame
 import sys
 from Navios import *
 
-largura, altura = 800, 600
+largura, altura = 900, 600
 FPS = 120
 pygame.init()
 # tela
@@ -46,6 +46,7 @@ def Barra_Espera(navio):
     # Reduza a tolerância com base no tempo decorrido (assumindo que o clock.tick já está sendo usado)
     navio.tempo_de_espera -= relogio.get_rawtime() / 1000.0
     navio.tempo_de_espera = max(navio.tempo_de_espera, 0)
+
 
 def Barra_Descarga(navio):
     tamanho_da_barra = 100
@@ -91,35 +92,87 @@ def Barra_Atraso(navio):
 
     # Reduza a tolerância com base no tempo decorrido (assumindo que o clock.tick já está sendo usado)
     navio.tempo_de_atraso -= relogio.get_rawtime() / 1000.0
-    print(f"tempo de atraso: {navio.tempo_de_atraso}")
     if navio.tempo_de_atraso <= 0:
         navio.tempo_de_atraso = navio.tempo_de_atraso_inicial
 
 
-
-pontuacao_total =0
 pontuacao = 0
 
 
 def gerenciaPontuacao(navio, berco):
-    global pontuacao_total
+    global pontuacao
 
     if navio.tempo_descarga <= 0:
-        if hasattr(navio, 'tipo') and hasattr(berco, 'tipo'):
-            pontuacao = navio.ponto * berco.ponto
-        else:
-            pontuacao = navio.ponto
-        pontuacao_total = pontuacao
+        peso = 1  # Peso padrão
+
+        if navio.cargo_tipo == 'carvao' and berco.tipo == 'carvao':
+            peso = 2
+        elif navio.cargo_tipo == 'carvao' and berco.tipo == 'soda_caustica':
+            peso = 1
+        elif navio.cargo_tipo == 'carvao' and berco.tipo == 'oleo_combustivel':
+            peso = 0.5
+        elif navio.cargo_tipo == 'soda_caustica' and berco.tipo == 'soda_caustica':
+            peso = 1.5
+        elif navio.cargo_tipo == 'soda_caustica' and berco.tipo == 'carvao':
+            peso = 0.5
+        elif navio.cargo_tipo == 'soda_caustica' and berco.tipo == 'oleo_combustivel':
+            peso = 1
+        elif navio.cargo_tipo == 'oleo_combustivel' and berco.tipo == 'carvao':
+            peso = 0.25
+        elif navio.cargo_tipo == 'oleo_combustivel' and berco.tipo == 'soda_caustica':
+            peso = 1
+        elif navio.cargo_tipo == 'oleo_combustivel' and berco.tipo == 'oleo_combustivel':
+            peso = 1.5
+        pontuacao_incremento = navio.ponto * peso
+        pontuacao += pontuacao_incremento
+        # print(pontuacao_incremento, pontuacao, peso)
 
     # Lógica para penalizar o atraso
     if navio.tempo_de_atraso <= 0.1:
         penalidade_atraso = navio.ponto // 10
-        pontuacao_total -= penalidade_atraso
+        pontuacao -= penalidade_atraso
 
-    return pontuacao_total
+    return pontuacao
 
 
 def exibir_pontuacao():
     # Exibe a pontuação na tela
-    texto_pontuacao = fonte.render(f"Pontuação: {pontuacao_total}", True, (255, 255, 255))
+    texto_pontuacao = fonte.render(f"Pontuação: {pontuacao}", True, (255, 255, 255))
     tela.blit(texto_pontuacao, (10, 10))
+
+
+# ---------------------PONTUAÇÃO DO JOGO--------------------------
+pontuacao_maxima = 200
+pontuacao_minima = -100
+
+def exibir_tempo():
+    # Exibe a pontuação na tela
+    texto_tempo = fonte.render(f"Tempo: {pygame.time.get_ticks()//1000}", True, (255, 255, 255))
+    tela.blit(texto_tempo, (750, 10))
+
+def verificar_estado_jogo():
+    global rodando, pausa
+
+    # Call exibir_tempo() to get the value of 'texto_tempo'
+    texto_tempo = exibir_tempo()
+
+    if pontuacao >= pontuacao_maxima or pontuacao <= pontuacao_minima:
+        fonte_mensagem = pygame.font.Font(None, 40)  # Define a fonte para a mensagem
+        if pontuacao >= pontuacao_maxima:
+            mensagem = fonte_mensagem.render(f"Você venceu! Parabéns! Seu tempo é de: {pygame.time.get_ticks()//1000}", True, (255, 255, 255))
+            tela.blit(mensagem, (300, 200))  # Renderiza a mensagem na tela
+            pygame.mixer.music.stop()  # Pára a música tema
+            pygame.mixer.music.load('win_musica.mp3')  # Carrega a música de vitória
+            pygame.mixer.music.set_volume(0.45)  # volume da música
+            pygame.mixer.music.play()  # reproduzir a música em um loop infinito
+        elif pontuacao <= pontuacao_minima:
+            mensagem = fonte_mensagem.render(f"Você Perdeu! Que Peninha! Você durou de: {pygame.time.get_ticks()//1000}", True,
+                                             (255, 255, 255))
+            tela.blit(mensagem, (200, 200))  # Renderiza a mensagem na tela
+            pygame.mixer.music.stop()  # Pára a música tema
+            pygame.mixer.music.load('loss_musica.mp3')  # Carrega a música de vitória
+            pygame.mixer.music.set_volume(0.45)
+            pygame.mixer.music.play()  # reproduzir a música sem loop
+        return True
+    else:
+        return False

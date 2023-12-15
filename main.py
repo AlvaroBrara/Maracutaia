@@ -1,17 +1,15 @@
-import pygame
-import sys
+
 from Navios import *
 from Berços import *
-import pygame.font
 from Interface import*
 pygame.init()
 
 # Variáveis de tempo
 tempo_atual = 0
-tempo_minimo = 0
-tempo_maximo = 0
+tempo_minimo = 3
+tempo_maximo = 5
 tempo_para_proximo_navio = random.randint(tempo_minimo, tempo_maximo)
-#fonte_tempo = pygame.font.Font(None, 36)  # Define a fonte para o tempo
+
 # Loop principal do jogo
 pausa = False
 rodando = True
@@ -28,9 +26,7 @@ while rodando:
                 pausa = not pausa
 
 
-    # Verifique o estado do jogo:
-    pausa = verificar_estado_jogo()
-
+    # Verifiqcar o estado do jogo
     if not pausa:
         tempo_atual += 1 / FPS
 
@@ -47,6 +43,8 @@ while rodando:
         bercos_group.draw(tela)
         navio_group.draw(tela)
 
+
+        #criação de barra
         for navio in navio_group:
             for destino_x, destino_y in destino:
                 if (navio.rect.centerx, navio.rect.centery) == (destino_x, destino_y):
@@ -69,7 +67,6 @@ while rodando:
                                 if navio.rect.center in posicoes_de_inicio:
                                     bercos_ocupados[i] = True
                                     # Ajuste da espera e remoção do navio
-                            navio.tempo_descarga -= 0.01
                             if navio.tempo_descarga <=0:
                                 gerenciaPontuacao(navio, berco)
                                 navio_group.remove(navio)
@@ -80,11 +77,17 @@ while rodando:
         # Renderiza a pontuação na tela
         exibir_pontuacao()
         verificar_estado_jogo()
+        exibir_tempo()
+        pausa = verificar_estado_jogo()
         #print(pontuacao_total)
         pygame.display.flip()
         relogio.tick(FPS)
     else:
         relogio.tick(0)
+
+
+
+
 
 # Finalização do Pygame e saída do programa
 pygame.mixer.music.stop()

@@ -10,29 +10,29 @@ class navio(pygame.sprite.Sprite):
             self.image = pygame.image.load("navio_carvao.png")
             self.tempo_descarga_inicial = 5
             self.tempo_descarga = 5
-            self.tempo_de_espera_inicial = 10  # tolerancia fixa
-            self.tempo_de_espera = 10  # tolerancia que muda com o tempo passado
-            self.ponto = 10
-            self.tempo_de_atraso_inicial = 3
-            self.tempo_de_atraso = 3
+            self.tempo_de_espera_inicial = 3  # tolerancia fixa
+            self.tempo_de_espera = 3 # tolerancia que muda com o tempo passado
+            self.ponto = 200
+            self.tempo_de_atraso_inicial = 1
+            self.tempo_de_atraso = 1
         elif tipo == "soda_caustica":
             self.image = pygame.image.load("navio_soda_caustica.png")
-            self.tempo_descarga_inicial = 7
-            self.tempo_descarga = 7
-            self.tempo_de_espera = 7
-            self.tempo_de_espera_inicial = 7
-            self.ponto = 20
-            self.tempo_de_atraso_inicial = 4
-            self.tempo_de_atraso = 4
+            self.tempo_descarga_inicial = 4
+            self.tempo_descarga = 4
+            self.tempo_de_espera = 1
+            self.tempo_de_espera_inicial = 1
+            self.ponto = 200
+            self.tempo_de_atraso_inicial = 3
+            self.tempo_de_atraso = 3
         elif tipo == "oleo_combustivel":
             self.image = pygame.image.load("navio_oleo_combustivel.png")
-            self.tempo_descarga_inicial = 12
-            self.tempo_descarga = 12
-            self.tempo_de_espera = 5
-            self.tempo_de_espera_inicial = 5
-            self.ponto=40
-            self.tempo_de_atraso_inicial = 5
-            self.tempo_de_atraso = 5
+            self.tempo_descarga_inicial = 7
+            self.tempo_descarga = 7
+            self.tempo_de_espera = 2
+            self.tempo_de_espera_inicial = 2
+            self.ponto=200
+            self.tempo_de_atraso_inicial = 1
+            self.tempo_de_atraso = 1
         self.image = pygame.transform.scale(self.image, (80, 100))  # Ajuste o tamanho conforme necessário
         self.rect = self.image.get_rect()
         self.rect.center = (x_chegada, y_chegada)
@@ -67,7 +67,7 @@ def Movimentar_Navios():
                     if not bercos_ocupados[j]:
                         bercos_ocupados[j] = True
                         # Atualize o dicionário destino_disponivel
-                        destino_disponivel[(destino_x, destino_y)] = True  # Marque o destino como indisponível
+                        # destino_disponivel[(destino_x, destino_y)] = True  # Marque o destino como indisponível
 
                     else:
                         colisao_com_berco = True
@@ -80,20 +80,20 @@ def Movimentar_Navios():
         else:
             # Se outro navio já chegou ao destino ou a distância for zero, mantenha o navio na mesma posição
             navio.rect.center = (atual_x, atual_y)
-            navio.chegou_destino = True  # Marque que o navio chegou ao destino
+            # navio.chegou_destino = True  # Marque que o navio chegou ao destino
             # Atualize o dicionário destino_disponivel
-            destino_disponivel[(destino_x, destino_y)] = False  # Marque o destino como indisponível
+            # destino_disponivel[(destino_x, destino_y)] = False  # Marque o destino como indisponível
 
 destino = [(100, y_chegada), (300, y_chegada), (500, y_chegada), (700, y_chegada)]
 origem = [(850, 600), (1050, 600), (1250, 600), (1450, 600)]
 navio_velocidade = 2
 posicoes_de_inicio = origem.copy()
-destino_disponivel = {
-    (100, y_chegada): True,
-    (300, y_chegada): True,
-    (500, y_chegada): True,
-    (700, y_chegada): True
-}
+# destino_disponivel = {
+#     (100, y_chegada): True,
+#     (300, y_chegada): True,
+#     (500, y_chegada): True,
+#     (700, y_chegada): True
+# }
 
 
 

@@ -10,13 +10,10 @@ class Berco(pygame.sprite.Sprite):
 
         if tipo == 'carvao':
             cor = (255, 0, 0, 128)  # Vermelho com transparência
-            self.peso = 2
         elif tipo == 'soda_caustica':
             cor = (0, 0, 255, 128)  # Azul com transparência
-            self.peso = 1
         elif tipo == 'oleo_combustivel':
             cor = (255, 255, 0, 128)  # Amarelo com transparência
-            self.peso = 1
         else:
             # Lógica para tipos desconhecidos (pode ser ajustada conforme necessário)
             cor = (100, 100, 100, 100)  # Cor padrão com transparência
