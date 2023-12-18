@@ -1,15 +1,16 @@
 
 from Navios import *
 from Berços import *
-from Interface import*
+from Pontuação import *
 pygame.init()
 
 # Variáveis de tempo
 tempo_atual = 0
-tempo_minimo = 3
-tempo_maximo = 5
+tempo_minimo = 0
+tempo_maximo = 0
 tempo_para_proximo_navio = random.randint(tempo_minimo, tempo_maximo)
-
+tempo_jogo =0
+nome = ""
 # Loop principal do jogo
 pausa = False
 rodando = True
@@ -24,6 +25,7 @@ while rodando:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 pausa = not pausa
+
 
 
     # Verifiqcar o estado do jogo
@@ -72,24 +74,63 @@ while rodando:
                                 navio_group.remove(navio)
                                 bercos_ocupados[i] = False
 
-
-
         # Renderiza a pontuação na tela
         exibir_pontuacao()
         verificar_estado_jogo()
-        exibir_tempo()
+        tempo_jogo = exibir_tempo(tempo_jogo)
         pausa = verificar_estado_jogo()
         #print(pontuacao_total)
         pygame.display.flip()
         relogio.tick(FPS)
     else:
         relogio.tick(0)
-
-
-
-
-
+    pygame.display.flip()
 # Finalização do Pygame e saída do programa
+
 pygame.mixer.music.stop()
 pygame.quit()
+
+
+if not rodando:
+    pygame.init()
+    largura, altura = 200, 100
+    tela = pygame.display.set_mode((largura, altura))
+    pygame.display.set_caption("Pontuação")
+    branco = (255, 255, 255)
+    preto = (0, 0, 0)
+    fonte = pygame.font.Font(None, 36)
+
+    capturando_texto = False
+    retangulo = pygame.Rect(0, 0, 200, 100)
+
+    while True:
+        for evento in pygame.event.get():
+            if evento.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif evento.type == pygame.MOUSEBUTTONDOWN:
+                if retangulo.collidepoint(evento.pos):
+                    capturando_texto = not capturando_texto
+            elif evento.type == pygame.KEYDOWN and capturando_texto:
+                if evento.key == pygame.K_RETURN:
+                    salvar_pontuacao_com_nome(nome, pontuacao, tempo_jogo)
+                    capturando_texto = False
+                    print("Texto digitado:", nome)
+                    nome = ""
+                    pygame.quit()
+                    sys.exit()
+                elif evento.key == pygame.K_BACKSPACE:
+                    nome = nome[:-1]
+                else:
+                    nome += evento.unicode
+        tela.fill(branco)
+        # Desenhe o retângulo na tela
+        pygame.draw.rect(tela, preto, retangulo, 2)
+        # Renderize o texto dentro do retângulo
+        texto_surface = fonte.render(nome, True, preto)
+        tela.blit(texto_surface, (retangulo.x + 5, retangulo.y + 5))
+        pygame.display.flip()
+
 sys.exit()
+
+

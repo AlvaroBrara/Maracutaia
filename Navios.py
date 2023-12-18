@@ -12,7 +12,7 @@ class navio(pygame.sprite.Sprite):
             self.tempo_descarga = 5
             self.tempo_de_espera_inicial = 3  # tolerancia fixa
             self.tempo_de_espera = 3 # tolerancia que muda com o tempo passado
-            self.ponto = 200
+            self.ponto = 20
             self.tempo_de_atraso_inicial = 1
             self.tempo_de_atraso = 1
         elif tipo == "soda_caustica":
@@ -21,7 +21,7 @@ class navio(pygame.sprite.Sprite):
             self.tempo_descarga = 4
             self.tempo_de_espera = 1
             self.tempo_de_espera_inicial = 1
-            self.ponto = 200
+            self.ponto = 10
             self.tempo_de_atraso_inicial = 3
             self.tempo_de_atraso = 3
         elif tipo == "oleo_combustivel":
@@ -30,7 +30,7 @@ class navio(pygame.sprite.Sprite):
             self.tempo_descarga = 7
             self.tempo_de_espera = 2
             self.tempo_de_espera_inicial = 2
-            self.ponto=200
+            self.ponto=30
             self.tempo_de_atraso_inicial = 1
             self.tempo_de_atraso = 1
         self.image = pygame.transform.scale(self.image, (80, 100))  # Ajuste o tamanho conforme necessário
@@ -103,7 +103,7 @@ def criar_navio_aleatorio():
     global posicoes_de_inicio, navio_group, tipo
 
     x, y = random.choice(posicoes_de_inicio)
-    cargo = random.choice(tipo)
+    cargo = 'carvao'
     novo_navio = navio(x, y, cargo)
 
     # Adicione o navio ao grupo
